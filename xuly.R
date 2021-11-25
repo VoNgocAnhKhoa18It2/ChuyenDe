@@ -122,6 +122,17 @@ filter17 = data %>%
            price_mean = round(mean(price), 2),
             )%>%
   arrange()
+cols <- c("mixed","high","trad")
+for (i in cols) {
+  summary_var <- enquo(i)
+  summary_nm <- quo_name(summary_var)
+  a <- data %>%
+    filter(varieties == print(i)) %>%
+    group_by(region) %>%
+    summarise(!!summary_nm := length(varieties)) %>%
+    arrange()
+  filter17 <- cbind(filter17[1],a[2],filter17[,2:ncol(filter17)])
+}
 
 filter18 = data %>% 
   group_by(region) %>%
@@ -135,39 +146,25 @@ filter18 = data %>%
             wage_mean = sum(wage),
             goutput_sum = (sum(goutput) - sum(noutput)),
             price_mean = sum(price),
-  )%>%
-  arrange()
-filter18["Total" ,] <- colSums(filter18)
+  )  %>% arrange()
 
-filter18 <- data.frame(t(filter18)) %>%
+filter19 <- data.frame(t(filter18)) %>%
   rownames_to_column(var = 'title') %>%
   filter(title != "region")
-filter18$title = sub("_.*", "", filter18$title)
-colnames(filter18) = c('title',filter17$region)
+filter19$title = sub("_.*", "", filter19$title)
+colnames(filter19) = c('title',filter17$region)
 
-cols <- c("mixed","high","trad")
-for (i in cols) {
-  summary_var <- enquo(i)
-  summary_nm <- quo_name(summary_var)
-  a <- data %>%
-    filter(varieties == print(i)) %>%
-    group_by(region) %>%
-    summarise(!!summary_nm := length(varieties)) %>%
-    arrange()
-  filter17 <- cbind(filter17[1],a[2],filter17[,2:ncol(filter17)])
-}
+nameCol <- colnames(filter19)[-1] 
+filter19[, nameCol] <- lapply(filter19[, nameCol],as.numeric)
+filter19$total = rowSums(filter19[,c(-1)])
+filter19$mean = round(rowMeans(filter19[,c(-1)]), digits = 2)
 
-plot_ly(filter17, x = ~region, y = ~trad, 
-        name = 'Trad', 
-        marker =  list(color = 'rgb(255,215,0)'), 
-        type = 'bar') %>%
-  add_trace(y = ~high, name = 'High', 
-            marker =  list(color = 'rgb(192,192,192)')) %>%
-  add_trace(y = ~mixed, name = 'Mixed', 
-            marker =  list(color = 'rgb(205,127,50)')) %>%
-  layout(yaxis = list(title = 'Varieties'),
-         xaxis = list(title = 'Region'),
-         barmode = 'stack')
+corrplot(data %>% select(-region,-X,-id,-status,-varieties,-bimas) %>% cor(method = "pearson"))
+ggplot(data,aes(x = size,y = goutput, 
+           color = region)) + 
+  facet_grid(~region)+geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(x ="Economy GDP Per Capita",y = "Happiness Score")
 #=====================================================================
 data$sum_seed <- data$seed * data$pseed
 

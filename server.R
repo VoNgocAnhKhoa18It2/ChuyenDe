@@ -11,28 +11,11 @@ server <- function(input, output) {
     )
   })
   
-  output$worker <- renderPlotly({
-    plot_ly(
-      data = filter17,
-      x =  ~ size_sum,
-      y = ~ totlabor_sum,
-      type = 'scatter',
-      mode = 'markers',
-      hoverinfo = 'text',
-      text = ~ paste(
-        '</br> Vùng: ',
-        region,
-        '</br> # Diện Tích: ',
-        size_sum,
-        '</br> # Công Nhân: ',
-        totlabor_sum
-      )
-    ) %>%
-      layout(
-        title = '',
-        xaxis = list(title = 'Diện Tích'),
-        yaxis = list(title = 'Công Nhân')
-      )
+  output$worker <- renderPlot({
+    corrplot(
+      data %>% select(-region,-X,-id,-status,-varieties,-bimas) %>% cor(method = "pearson"),
+      order = 'AOE'
+    )
   })
   
   # Table
@@ -152,14 +135,21 @@ server <- function(input, output) {
   })
   
   output$dDetail <- renderPlot({
-    if (input$dRegion != "--- All ---") {
-      
-    } else {
-      
-    }
+    ggplot(filter17, aes(x = region, y = filter17[,input$dSDetail])) + 
+      geom_col(aes(fill = region), color = "black") +
+      theme(axis.text.x = element_text(angle = 0)) +
+      xlab("Region") + ylab(input$dSDetail)
   })
   
-  
+  output$edDetail <- renderPlot({
+    
+    ggplot(data,aes(x = data[,input$eSDetail],y = goutput, 
+                    color = region)) + 
+      facet_grid(~region)+geom_point() + 
+      geom_smooth(method = "lm") + 
+      labs(x = input$eSDetail,y = "goutput")
+    
+  })
   
   
   

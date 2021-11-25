@@ -22,7 +22,7 @@ ui <- dashboardPage(
       menuItem("Region", tabName = "Region", icon = icon("globe-asia"))
     )
   ),
-  dashboardBody(
+  dashboardBody(style = "background-color: white;",
     tabItems(
       tabItem(
         tabName = "dashboard",
@@ -58,18 +58,12 @@ ui <- dashboardPage(
             icon = icon("product-hunt"),
             color = "green"
           ),
-          box(
-            title = "Tỉ lệ các nông trại ở các vùng",
-            solidHeader = TRUE,
-            status = "primary",
-            plotlyOutput("region")
+          column(6,style = "padding-right: 0px;",
+            plotOutput("worker", height = 500)
           ),
-          box(
-            title = "Diện Tích và Công nhân ở các vùng",
-            solidHeader = TRUE,
-            status = "warning",
-            plotlyOutput("worker")
-          )
+          column(6,style = "padding-left: 0px;",
+            plotlyOutput("region", height = 500)
+          ),
         ),
       ),
       
@@ -167,23 +161,41 @@ ui <- dashboardPage(
                 box(
                   width = 12,
                   title = "Detail",
-                  collapsible = TRUE,
                   solidHeader = TRUE,
                   status = "warning",
                   fluidRow(
                     column(
                       width = 2,
                       selectInput(
-                        "dRegion",
-                        "Region",
-                        choices = c("--- All ---", filter17$region),
-                        selected = "--- All ---"
+                        "dSDetail",
+                        "Detail",
+                        choices = names(filter18)[-1],
+                      ),
+                    ),
+                    column(
+                      width = 10,
+                      plotOutput("dDetail")
+                    )   
+                  )
+                ),
+                box(
+                  width = 12,
+                  title = "Expected",
+                  solidHeader = TRUE,
+                  status = "success",
+                  fluidRow(
+                    column(
+                      width = 2,
+                      selectInput(
+                        "eSDetail",
+                        "Expected",
+                        choices = names(data)[3:9],
                       ),
                     ),
                     column(
                       width = 10,
                       fluidRow(
-                        plotOutput("dDetail")
+                        plotOutput("edDetail")
                       )
                     )   
                   )
