@@ -11,6 +11,19 @@ server <- function(input, output) {
     )
   })
   
+  output$priceAgoutput <- renderPlotly({
+    plot_ly(datalm ,
+            x =  ~goutput, y = ~price,
+            type = 'scatter', 
+            mode = 'markers',
+            hoverinfo = 'text',
+            text = ~paste('</br> # goutput: ', goutput,
+                          '</br> # price: ', price)) %>%
+      layout(title = 'Tổng sản lượng so giá gạo', 
+             xaxis = list(title = 'Goutput'), 
+             yaxis = list(title = 'Price'))
+  })
+  
   output$worker <- renderPlot({
     corrplot(
       data %>% select(-region,-X,-id,-status,-varieties,-bimas) %>% cor(method = "pearson"),

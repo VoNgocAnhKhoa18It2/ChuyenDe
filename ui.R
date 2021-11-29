@@ -19,7 +19,7 @@ ui <- dashboardPage(
         tabName = "dashboard",
         icon = icon("tachometer-alt")
       ),
-      menuItem("Region", tabName = "Region", icon = icon("globe-asia"))
+      menuItem("Data", tabName = "Region", icon = icon("globe-asia"))
     )
   ),
   dashboardBody(style = "background-color: white;",
@@ -27,42 +27,51 @@ ui <- dashboardPage(
       tabItem(
         tabName = "dashboard",
         fluidRow(
-          valueBox(length(unique(data$id)), "Nông trại", icon = icon("tractor")),
+          valueBox(length(unique(data$id)), "Farm", icon = icon("tractor")),
           valueBox(
             length(filter17$region),
-            "Vùng",
+            "Region",
             icon = icon("globe-asia"),
             color = "purple"
           ),
           valueBox(
             sum(filter17$size_sum),
-            "Diện Tích",
+            "Area",
             icon = icon("chart-area"),
             color = "yellow"
           ),
           valueBox(
             sum(data$seed),
-            "Giống",
+            "Seed",
             icon = icon("seedling"),
             color = "orange"
           ),
           valueBox(
             sum(filter17$totlabor_sum),
-            "Công Nhân",
+            "Farmer",
             icon = icon("users"),
             color = "navy"
           ),
           valueBox(
             sum(filter17$goutput_sum),
-            "Gạo",
+            "Rice",
             icon = icon("product-hunt"),
             color = "green"
           ),
-          column(6,style = "padding-right: 0px;",
+          column(
+            6,
+            style = "padding-right: 0px;margin-top:3em",
+            h3("Biểu đồ tương quan"),
             plotOutput("worker", height = 500)
           ),
-          column(6,style = "padding-left: 0px;",
+          column(
+            6,
+            style = "padding-left: 0px;margin-top:3em",
+            h3("Các nông trại ở các vùng"),    
             plotlyOutput("region", height = 500)
+          ),
+          column(12,style = "margin-top:5em",
+            plotlyOutput("priceAgoutput",height = 500)
           ),
         ),
       ),

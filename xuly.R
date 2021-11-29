@@ -207,6 +207,8 @@ pairs(datalm)
 r1 <- lm(goutput ~ noutput, data = datalm)
 summary(r1)
 plot(price ~ noutput, data = datalm)
+ggplot(datalm,aes(y = price,x = goutput)) + geom_point(colour = "green") + geom_smooth(method = "lm")
+
 abline(r1, col = 'green')
 
 #reg <- lm(price~purea + totlabor + wage, data = datalm)
