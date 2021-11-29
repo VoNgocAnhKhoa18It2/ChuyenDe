@@ -42,6 +42,8 @@ server <- function(input, output) {
       region <- region %>% arrange(desc(.data[[input$sSort]]))
     }
     
+    region <- region[][region$price >= input$sPrice[1] & region$price <= input$sPrice[2],]
+    
     if (input$sTop != 0) {
       region <- region %>% head(input$sTop)
     }

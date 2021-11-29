@@ -105,6 +105,16 @@ ui <- dashboardPage(
                     "Bimas", 
                     c("--- All ---", levels(factor(data$bimas))), 
                     selected = "--- All ---"),
+                  sliderInput(
+                    "sPrice", 
+                    "Price",
+                    as.numeric(levels(factor(data$price))[1]), 
+                    as.numeric(tail(levels(factor(data$price)), 1)),
+                    c(
+                      as.numeric(levels(factor(data$price))[1]),
+                      as.numeric(tail(levels(factor(data$price)), 1))
+                    )
+                  ),
                   selectInput(
                     "sSort", 
                     "Sort", 
